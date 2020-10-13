@@ -1,0 +1,82 @@
+#include<stdio.h>
+
+#define SIZE 9
+
+void printSudoku(int sudoku[SIZE][SIZE]) {
+int count, counter;
+printf("\n");
+for(count = 0; count < SIZE; count++) {
+for(counter = 0; counter < SIZE; counter++)
+printf("%d ", sudoku[count][counter]);
+printf("\n");
+    }
+    printf("\n");
+}
+
+void nextBox(int *x, int *y) {
+if(++(*x) == SIZE) {
+(*y)++;
+*x = 0;
+}
+}
+
+int issafe(int sudoku[SIZE][SIZE], int n, int x, int y) {//1 0 3
+int i = 0, j;
+while(i < SIZE) {
+if(sudoku[i][x] == n)
+return 0;
+if(sudoku[y][i] == n)
+return 0;
+i++;
+}
+x = x - (x % 3);
+y = y - (y % 3);
+for(i = y; i < y + 3; i++)
+for(j = x; j < x + 3; j++)
+if(sudoku[i][j] == n)
+return 0;
+return 1;
+}
+
+int solveSudoku(int sudoku[SIZE][SIZE], int x, int y) {
+/* 
+Sample input
+3 8 5 0 0 0 0 0 0
+9 2 1 0 0 0 0 0 0
+6 4 7 0 0 0 0 0 0
+0 0 0 1 2 3 0 0 0
+0 0 0 7 8 4 0 0 0
+0 0 0 6 9 5 0 0 0
+0 0 0 0 0 0 8 7 3
+0 0 0 0 0 0 9 6 2
+0 0 0 0 0 0 1 4 5 */
+int count;
+while(y < SIZE && sudoku[y][x])
+nextBox(&x, &y);
+if(y >= SIZE)
+return 1;
+for(count = 1; count <= SIZE; count++) {
+if(issafe(sudoku, count, x, y)) {
+sudoku[y][x] = count;
+if(solveSudoku(sudoku, x, y))
+return 1;
+sudoku[y][x] = 0;
+}
+}
+return 0;
+}
+
+int main()
+{
+int sudoku[SIZE][SIZE];
+int  test_case, count, counter;
+
+
+for(count = 0; count < SIZE; count++)
+for(counter = 0; counter < SIZE; counter++)
+scanf("%d", &sudoku[count][counter]);
+solveSudoku(sudoku, 0, 0);
+printSudoku(sudoku);
+
+return 0;
+}  
